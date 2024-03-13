@@ -2,4 +2,10 @@ build:
 	go build -o main .
 
 run:
-	docker-compose up -d
+	go run ./main.go
+
+docker-build:
+	docker-compose build
+
+docker-run:
+	docker-compose up
