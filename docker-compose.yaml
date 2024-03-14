@@ -8,6 +8,16 @@ services:
     ports:
       - "8080:8080"
     restart: unless-stopped
+    depends_on:
+      - mongo
+    networks:
+      - backend
+
+  mongo:
+    image: mongo
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
     networks:
       - backend
 

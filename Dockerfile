@@ -8,6 +8,8 @@ RUN go mod download
 
 COPY . .
 
+COPY .env.docker ./.env
+
 # Build the Go app
 RUN go build -o main .
 

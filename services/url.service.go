@@ -2,6 +2,9 @@ package services
 
 import (
 	"fmt"
+	"github.com/sumitsj/url-shortener/models"
+	"github.com/sumitsj/url-shortener/repositories"
+	"log"
 	"math/rand"
 	"time"
 )
@@ -11,15 +14,22 @@ type UrlService interface {
 }
 
 type urlService struct {
+	repository repositories.UrlMappingRepository
 }
 
 func (u *urlService) GenerateShortUrl(url string) string {
 	shortKey := generateShortKey()
 
-	// TODO : Read host from env if present
-	shortenedURL := fmt.Sprintf("http://localhost:8080/short/%s", shortKey)
+	shortenedURL := fmt.Sprintf("%v:%v/short/%s", Config.ServerAddr, Config.ServerPort, shortKey)
 
-	// TODO : Save mapping of original & shortened URL
+	urlMapping := models.URLMapping{
+		OriginalUrl:  url,
+		ShortenedUrl: shortenedURL,
+	}
+
+	if err := u.repository.Create(&urlMapping); err != nil {
+		log.Printf("Failed to save url mapping for url: %v.\nError: %v", url, err)
+	}
 
 	return shortenedURL
 }
@@ -38,6 +48,8 @@ func generateShortKey() string {
 	return string(shortKey)
 }
 
-func CreateUrlService() UrlService {
-	return &urlService{}
+func CreateUrlService(repository repositories.UrlMappingRepository) UrlService {
+	return &urlService{
+		repository: repository,
+	}
 }
