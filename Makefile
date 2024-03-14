@@ -9,3 +9,7 @@ docker-build:
 
 docker-run:
 	docker-compose up
+
+run-tests:
+	go clean -testcache
+	go test `go list ./...`
