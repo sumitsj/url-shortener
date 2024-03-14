@@ -5,6 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/sumitsj/url-shortener/contracts"
 	"github.com/sumitsj/url-shortener/services"
+	"log"
 	"net/http"
 )
 
@@ -32,8 +33,25 @@ func (receiver *urlHandler) ShortenUrl(ctx *gin.Context) {
 	})
 }
 
+func (receiver *urlHandler) HandleRedirect(ctx *gin.Context) {
+	shortKey := ctx.Param("shortKey")
+	shortUrl := receiver.service.FormatShortUrl(shortKey)
+
+	url, err := receiver.service.GetOriginalUrlBy(shortUrl)
+	if err != nil {
+		log.Println(err.Error())
+		ctx.JSON(http.StatusNotFound, contracts.ShortenUrlResponse{
+			Error: err.Error(),
+		})
+		return
+	}
+
+	ctx.Redirect(http.StatusMovedPermanently, url)
+}
+
 type URLHandler interface {
 	ShortenUrl(ctx *gin.Context)
+	HandleRedirect(ctx *gin.Context)
 }
 
 func CreateUrlHandler(service services.UrlService) URLHandler {

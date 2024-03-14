@@ -11,6 +11,8 @@ import (
 
 type UrlService interface {
 	GenerateShortUrl(url string) string
+	GetOriginalUrlBy(shortenedUrl string) (string, error)
+	FormatShortUrl(shortKey string) string
 }
 
 type urlService struct {
@@ -18,19 +20,41 @@ type urlService struct {
 }
 
 func (u *urlService) GenerateShortUrl(url string) string {
-	shortKey := generateShortKey()
+	urmMapping, err := u.repository.GetByOriginalUrl(url)
 
-	shortenedURL := fmt.Sprintf("%v:%v/short/%s", Config.ServerAddr, Config.ServerPort, shortKey)
+	if err != nil {
+		shortKey := generateShortKey()
 
-	urlMapping := models.URLMapping{
-		OriginalUrl:  url,
-		ShortenedUrl: shortenedURL,
+		shortenedURL := u.FormatShortUrl(shortKey)
+
+		urlMapping := models.URLMapping{
+			OriginalUrl:  url,
+			ShortenedUrl: shortenedURL,
+		}
+
+		if err := u.repository.Create(&urlMapping); err != nil {
+			log.Printf("Failed to save url mapping for url: %v.\nError: %v", url, err)
+		}
+
+		return shortenedURL
 	}
 
-	if err := u.repository.Create(&urlMapping); err != nil {
-		log.Printf("Failed to save url mapping for url: %v.\nError: %v", url, err)
+	log.Printf("Url mapping found for original URL: \"%v\"", url)
+
+	return urmMapping.ShortenedUrl
+}
+
+func (u *urlService) GetOriginalUrlBy(shortenedUrl string) (string, error) {
+	url, err := u.repository.GetByShortenedUrl(shortenedUrl)
+	if err != nil {
+		return "", err
 	}
 
+	return url.OriginalUrl, nil
+}
+
+func (u *urlService) FormatShortUrl(shortKey string) string {
+	shortenedURL := fmt.Sprintf("%v:%v/s/%s", Config.ServerAddr, Config.ServerPort, shortKey)
 	return shortenedURL
 }
 

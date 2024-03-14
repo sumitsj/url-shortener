@@ -13,6 +13,7 @@ func (router *Router) Init() *gin.Engine {
 	r := gin.New()
 	r.Use(gin.Recovery())
 	r.POST("/short", router.handler.ShortenUrl)
+	r.GET("/s/:shortKey", router.handler.HandleRedirect)
 	return r
 }
 
