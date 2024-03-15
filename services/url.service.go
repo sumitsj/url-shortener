@@ -1,6 +1,7 @@
 package services
 
 import (
+	"errors"
 	"fmt"
 	"github.com/sumitsj/url-shortener/models"
 	"github.com/sumitsj/url-shortener/repositories"
@@ -10,7 +11,7 @@ import (
 )
 
 type UrlService interface {
-	GenerateShortUrl(url string) string
+	GenerateShortUrl(url string) (string, error)
 	GetOriginalUrlBy(shortenedUrl string) (string, error)
 	FormatShortUrl(shortKey string) string
 }
@@ -20,10 +21,12 @@ type urlService struct {
 	repository repositories.UrlMappingRepository
 }
 
-func (u *urlService) GenerateShortUrl(url string) string {
+func (u *urlService) GenerateShortUrl(url string) (string, error) {
 	urmMapping, err := u.repository.GetByOriginalUrl(url)
 
 	if err != nil {
+		log.Printf("Error while fetching URL mapping.\nError: %v", err.Error())
+
 		shortKey := generateShortKey()
 
 		shortenedURL := u.FormatShortUrl(shortKey)
@@ -34,15 +37,16 @@ func (u *urlService) GenerateShortUrl(url string) string {
 		}
 
 		if err := u.repository.Create(&urlMapping); err != nil {
-			log.Printf("Failed to save url mapping for url: %v.\nError: %v", url, err)
+			errorMessage := fmt.Sprintf("Failed to save url mapping for url: %v.\nError: %v", url, err)
+			return "", errors.New(errorMessage)
 		}
 
-		return shortenedURL
+		return shortenedURL, nil
 	}
 
 	log.Printf("Url mapping found for original URL: \"%v\"", url)
 
-	return urmMapping.ShortenedUrl
+	return urmMapping.ShortenedUrl, nil
 }
 
 func (u *urlService) GetOriginalUrlBy(shortenedUrl string) (string, error) {

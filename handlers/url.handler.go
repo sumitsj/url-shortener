@@ -3,6 +3,7 @@ package handlers
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/sumitsj/url-shortener/constants"
 	"github.com/sumitsj/url-shortener/contracts"
 	"github.com/sumitsj/url-shortener/services"
 	"log"
@@ -17,15 +18,20 @@ func (receiver *urlHandler) ShortenUrl(ctx *gin.Context) {
 	requestBody := contracts.ShortenUrlRequest{}
 
 	if err := ctx.ShouldBindJSON(&requestBody); err != nil {
-		errorMessage := "Failed to parse request body."
-		fmt.Println(errorMessage)
+		fmt.Println(constants.RequestParsingErrorMessage)
 		ctx.JSON(http.StatusBadRequest, contracts.ShortenUrlResponse{
-			Error: errorMessage,
+			Error: constants.RequestParsingErrorMessage,
 		})
 		return
 	}
 
-	shortUrl := receiver.service.GenerateShortUrl(requestBody.URL)
+	shortUrl, err := receiver.service.GenerateShortUrl(requestBody.URL)
+	if err != nil {
+		log.Println(err)
+		ctx.JSON(http.StatusInternalServerError, contracts.ShortenUrlResponse{
+			Error: constants.InternalServerErrorMessage,
+		})
+	}
 
 	ctx.JSON(http.StatusOK, contracts.ShortenUrlResponse{
 		OriginalUrl:  requestBody.URL,
@@ -34,14 +40,14 @@ func (receiver *urlHandler) ShortenUrl(ctx *gin.Context) {
 }
 
 func (receiver *urlHandler) HandleRedirect(ctx *gin.Context) {
-	shortKey := ctx.Param("shortKey")
+	shortKey := ctx.Param(constants.ShortKeyPathVariableName)
 	shortUrl := receiver.service.FormatShortUrl(shortKey)
 
 	url, err := receiver.service.GetOriginalUrlBy(shortUrl)
 	if err != nil {
 		log.Println(err.Error())
 		ctx.JSON(http.StatusNotFound, contracts.ShortenUrlResponse{
-			Error: err.Error(),
+			Error: constants.RedirectionErrorMessage,
 		})
 		return
 	}

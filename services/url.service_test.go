@@ -23,7 +23,7 @@ func TestUrlService_GenerateShortUrl(t *testing.T) {
 
 	service := CreateUrlService(appConfig, repository)
 
-	shortUrl := service.GenerateShortUrl(url)
+	shortUrl, _ := service.GenerateShortUrl(url)
 
 	assert.Contains(t, shortUrl, expectedShortUrl)
 	assert.Equal(t, 30, len(shortUrl))

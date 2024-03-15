@@ -25,7 +25,7 @@ func (r *urlMappingRepository) GetByOriginalUrl(originalUrl string) (*models.URL
 	urlMapping := &models.URLMapping{}
 
 	if err := mgm.Coll(urlMapping).First(bson.M{"originalUrl": originalUrl}, urlMapping); err != nil {
-		return nil, errors.New(fmt.Sprintf("GetByOriginalUrl: Can not find URL mapping for original URL: \"%v\"", originalUrl))
+		return nil, errors.New(fmt.Sprintf("GetByOriginalUrl: Can not find URL mapping for original URL: \"%v\". Internal Error: \"%v\"", originalUrl, err.Error()))
 	}
 
 	return urlMapping, nil
@@ -35,7 +35,7 @@ func (r *urlMappingRepository) GetByShortenedUrl(shortUrl string) (*models.URLMa
 	urlMapping := &models.URLMapping{}
 
 	if err := mgm.Coll(urlMapping).First(bson.M{"shortenedUrl": shortUrl}, urlMapping); err != nil {
-		return nil, errors.New(fmt.Sprintf("GetByShortenedUrl: Can not find URL mapping for short URL: \"%v\"", shortUrl))
+		return nil, errors.New(fmt.Sprintf("GetByShortenedUrl: Can not find URL mapping for short URL: \"%v\". Internal Error: \"%v\"", shortUrl, err.Error()))
 	}
 
 	return urlMapping, nil
