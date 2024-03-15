@@ -68,5 +68,9 @@ The application starts at port 8080:
 #### Running Tests
 
 ```bash
+# Run unit tests
 make run-tests
+
+# Run unit tests with coverage report in html format
+make run-tests-with-coverage
 ```

@@ -7,3 +7,7 @@ logs/
 .gitignore
 
 main
+
+# Test ccverage files
+*.html
+*.out
