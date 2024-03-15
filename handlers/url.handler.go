@@ -31,6 +31,7 @@ func (receiver *urlHandler) ShortenUrl(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, contracts.ShortenUrlResponse{
 			Error: constants.InternalServerErrorMessage,
 		})
+		return
 	}
 
 	ctx.JSON(http.StatusOK, contracts.ShortenUrlResponse{
