@@ -6,8 +6,8 @@ import (
 	"log"
 )
 
-func InitMongoDB() {
-	err := mgm.SetDefaultConfig(nil, Config.MongodbDatabase, options.Client().ApplyURI(Config.MongodbUri))
+func InitMongoDB(config AppConfig) {
+	err := mgm.SetDefaultConfig(nil, config.GetMongoDbDatabase(), options.Client().ApplyURI(config.GetMongoDbUri()))
 	if err != nil {
 		panic(err)
 	}

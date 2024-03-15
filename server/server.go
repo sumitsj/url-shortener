@@ -9,10 +9,10 @@ import (
 )
 
 func Start() error {
-	services.LoadConfig()
-	services.InitMongoDB()
+	appConfig := services.LoadConfig()
+	services.InitMongoDB(appConfig)
 	repository := repositories.CreateUrlMappingRepository()
-	service := services.CreateUrlService(repository)
+	service := services.CreateUrlService(appConfig, repository)
 	handler := handlers.CreateUrlHandler(service)
 	r := router.CreateRouter(handler).Init()
 	r.GET("/ping", func(c *gin.Context) {

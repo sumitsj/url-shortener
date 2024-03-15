@@ -30,6 +30,66 @@ func (_m *UrlMappingRepository) Create(urlMapping *models.URLMapping) error {
 	return r0
 }
 
+// GetByOriginalUrl provides a mock function with given fields: originalUrl
+func (_m *UrlMappingRepository) GetByOriginalUrl(originalUrl string) (*models.URLMapping, error) {
+	ret := _m.Called(originalUrl)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetByOriginalUrl")
+	}
+
+	var r0 *models.URLMapping
+	var r1 error
+	if rf, ok := ret.Get(0).(func(string) (*models.URLMapping, error)); ok {
+		return rf(originalUrl)
+	}
+	if rf, ok := ret.Get(0).(func(string) *models.URLMapping); ok {
+		r0 = rf(originalUrl)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*models.URLMapping)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(string) error); ok {
+		r1 = rf(originalUrl)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// GetByShortenedUrl provides a mock function with given fields: shortUrl
+func (_m *UrlMappingRepository) GetByShortenedUrl(shortUrl string) (*models.URLMapping, error) {
+	ret := _m.Called(shortUrl)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetByShortenedUrl")
+	}
+
+	var r0 *models.URLMapping
+	var r1 error
+	if rf, ok := ret.Get(0).(func(string) (*models.URLMapping, error)); ok {
+		return rf(shortUrl)
+	}
+	if rf, ok := ret.Get(0).(func(string) *models.URLMapping); ok {
+		r0 = rf(shortUrl)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*models.URLMapping)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(string) error); ok {
+		r1 = rf(shortUrl)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // NewUrlMappingRepository creates a new instance of UrlMappingRepository. It also registers a testing interface on the mock and a cleanup function to assert the mocks expectations.
 // The first argument is typically a *testing.T value.
 func NewUrlMappingRepository(t interface {

@@ -16,6 +16,7 @@ type UrlService interface {
 }
 
 type urlService struct {
+	appConfig  AppConfig
 	repository repositories.UrlMappingRepository
 }
 
@@ -54,7 +55,7 @@ func (u *urlService) GetOriginalUrlBy(shortenedUrl string) (string, error) {
 }
 
 func (u *urlService) FormatShortUrl(shortKey string) string {
-	shortenedURL := fmt.Sprintf("%v:%v/s/%s", Config.ServerAddr, Config.ServerPort, shortKey)
+	shortenedURL := fmt.Sprintf("%v:%v/s/%s", u.appConfig.GetServerAddr(), u.appConfig.GetServerPort(), shortKey)
 	return shortenedURL
 }
 
@@ -72,8 +73,9 @@ func generateShortKey() string {
 	return string(shortKey)
 }
 
-func CreateUrlService(repository repositories.UrlMappingRepository) UrlService {
+func CreateUrlService(appConfig AppConfig, repository repositories.UrlMappingRepository) UrlService {
 	return &urlService{
+		appConfig:  appConfig,
 		repository: repository,
 	}
 }
