@@ -19,3 +19,6 @@ run-tests-with-coverage:
 	go test -coverprofile cover.out `go list ./... | grep -v "mocks\|constants\|contracts\|models"`
 	go tool cover -html cover.out -o cover.html
 	open cover.html
+
+run-integration-tests:
+	cd tests && go test -tags integration

@@ -65,7 +65,7 @@ The application starts at port 8080:
 
 ---
 
-#### Running Tests
+#### Running Unit Tests
 
 ```bash
 # Run unit tests
@@ -74,3 +74,19 @@ make run-tests
 # Run unit tests with coverage report in html format
 make run-tests-with-coverage
 ```
+---
+#### Running Integration Tests
+
+```bash
+make run-integration-tests
+```
+
+#### Troubleshooting
+If you get an error `Could not connect to Docker: Get "http://unix.sock/_ping": dial unix /var/run/docker.sock: connect: no such file or directory`, try setting `DOCKER_HOST` environment variable.
+
+In case of Colima, you can do this by running below command.
+```bash
+export DOCKER_HOST="unix://$HOME/.colima/docker.sock"
+```
+
+---
