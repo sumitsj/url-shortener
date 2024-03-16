@@ -43,7 +43,7 @@ make docker-run
 
 ```bash
 # Create Env file
-cp ./env.docker .env
+cp ./env.local .env
 
 # Download modules
 go mod download
