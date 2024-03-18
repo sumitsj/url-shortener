@@ -10,7 +10,7 @@ import (
 
 type UrlMappingRepository interface {
 	Create(urlMapping *models.URLMapping) error
-	GetByShortenedUrl(shortUrl string) (*models.URLMapping, error)
+	GetByShortKey(shortUrl string) (*models.URLMapping, error)
 	GetByOriginalUrl(originalUrl string) (*models.URLMapping, error)
 }
 
@@ -31,11 +31,11 @@ func (r *urlMappingRepository) GetByOriginalUrl(originalUrl string) (*models.URL
 	return urlMapping, nil
 }
 
-func (r *urlMappingRepository) GetByShortenedUrl(shortUrl string) (*models.URLMapping, error) {
+func (r *urlMappingRepository) GetByShortKey(shortUrl string) (*models.URLMapping, error) {
 	urlMapping := &models.URLMapping{}
 
 	if err := mgm.Coll(urlMapping).First(bson.M{"shortenedUrl": shortUrl}, urlMapping); err != nil {
-		return nil, errors.New(fmt.Sprintf("GetByShortenedUrl: Can not find URL mapping for short URL: \"%v\". Internal Error: \"%v\"", shortUrl, err.Error()))
+		return nil, errors.New(fmt.Sprintf("GetByShortKey: Can not find URL mapping for short URL: \"%v\". Internal Error: \"%v\"", shortUrl, err.Error()))
 	}
 
 	return urlMapping, nil

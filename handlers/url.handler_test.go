@@ -18,13 +18,11 @@ import (
 
 func TestUrlHandler_HandleRedirect(t *testing.T) {
 	shortKey := "abcdef"
-	shortenedUrl := "http://localhost:8080/s/abcdef"
 	originalUrl := "www.google.com"
 	engine := gin.Default()
 
 	urlService := mocks.NewUrlService(t)
-	urlService.On("FormatShortUrl", shortKey).Return(shortenedUrl)
-	urlService.On("GetOriginalUrlBy", shortenedUrl).Return(originalUrl, nil)
+	urlService.On("GetOriginalUrlBy", shortKey).Return(originalUrl, nil)
 
 	handler := CreateUrlHandler(urlService)
 	engine.GET("/redirect/:shortKey", handler.HandleRedirect)
@@ -40,12 +38,10 @@ func TestUrlHandler_HandleRedirect(t *testing.T) {
 
 func TestUrlHandler_HandleRedirect_ShouldReturnErrorResponseIfShortUrlNotFound(t *testing.T) {
 	shortKey := "abcdef"
-	shortenedUrl := "http://localhost:8080/s/abcdef"
 	engine := gin.Default()
 
 	urlService := mocks.NewUrlService(t)
-	urlService.On("FormatShortUrl", shortKey).Return(shortenedUrl)
-	urlService.On("GetOriginalUrlBy", shortenedUrl).Return("", errors.New("not found"))
+	urlService.On("GetOriginalUrlBy", shortKey).Return("", errors.New("not found"))
 
 	handler := CreateUrlHandler(urlService)
 	engine.GET("/redirect/:shortKey", handler.HandleRedirect)

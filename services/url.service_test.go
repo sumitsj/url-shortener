@@ -34,15 +34,18 @@ func TestUrlService_GenerateShortUrl(t *testing.T) {
 
 func TestUrlService_GenerateShortUrl_ShouldReturnExistingShortUrlIfExists(t *testing.T) {
 	url := "www.google.com"
-	expectedShortUrl := "http://localhost:8080/s/abcdef"
+	shortKey := "abcdef"
+	expectedShortUrl := "http://localhost:8080/s/" + shortKey
 
 	repository := mocks.NewUrlMappingRepository(t)
 	repository.On("GetByOriginalUrl", url).Return(&models.URLMapping{
-		OriginalUrl:  url,
-		ShortenedUrl: expectedShortUrl,
+		OriginalUrl: url,
+		ShortKey:    shortKey,
 	}, nil)
 
 	appConfig := mocks2.NewAppConfig(t)
+	appConfig.On("GetServerAddr").Return("http://localhost")
+	appConfig.On("GetServerPort").Return("8080")
 
 	service := CreateUrlService(appConfig, repository)
 
@@ -61,8 +64,6 @@ func TestUrlService_GenerateShortUrl_ShouldReturnErrorInCaseOfDbIssue(t *testing
 	repository.On("Create", mock.AnythingOfType("*models.URLMapping")).Return(errors.New("connection failed"))
 
 	appConfig := mocks2.NewAppConfig(t)
-	appConfig.On("GetServerAddr").Return("http://localhost")
-	appConfig.On("GetServerPort").Return("8080")
 
 	service := CreateUrlService(appConfig, repository)
 
@@ -78,9 +79,9 @@ func TestUrlService_GetOriginalUrlBy(t *testing.T) {
 	shortenedUrl := "http://localhost:8080/s/abcdef"
 
 	repository := mocks.NewUrlMappingRepository(t)
-	repository.On("GetByShortenedUrl", shortenedUrl).Return(&models.URLMapping{
-		OriginalUrl:  url,
-		ShortenedUrl: shortenedUrl,
+	repository.On("GetByShortKey", shortenedUrl).Return(&models.URLMapping{
+		OriginalUrl: url,
+		ShortKey:    shortenedUrl,
 	}, nil)
 
 	appConfig := mocks2.NewAppConfig(t)
@@ -97,7 +98,7 @@ func TestUrlService_GetOriginalUrlBy_ShouldReturnErrorInCaseOfDbIssue(t *testing
 	errorMessage := "db error"
 
 	repository := mocks.NewUrlMappingRepository(t)
-	repository.On("GetByShortenedUrl", shortenedUrl).Return(nil, errors.New(errorMessage))
+	repository.On("GetByShortKey", shortenedUrl).Return(nil, errors.New(errorMessage))
 
 	appConfig := mocks2.NewAppConfig(t)
 	service := CreateUrlService(appConfig, repository)

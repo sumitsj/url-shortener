@@ -61,11 +61,11 @@ func (_m *UrlMappingRepository) GetByOriginalUrl(originalUrl string) (*models.UR
 }
 
 // GetByShortenedUrl provides a mock function with given fields: shortUrl
-func (_m *UrlMappingRepository) GetByShortenedUrl(shortUrl string) (*models.URLMapping, error) {
+func (_m *UrlMappingRepository) GetByShortKey(shortUrl string) (*models.URLMapping, error) {
 	ret := _m.Called(shortUrl)
 
 	if len(ret) == 0 {
-		panic("no return value specified for GetByShortenedUrl")
+		panic("no return value specified for GetByShortKey")
 	}
 
 	var r0 *models.URLMapping

@@ -42,9 +42,8 @@ func (receiver *urlHandler) ShortenUrl(ctx *gin.Context) {
 
 func (receiver *urlHandler) HandleRedirect(ctx *gin.Context) {
 	shortKey := ctx.Param(constants.ShortKeyPathVariableName)
-	shortUrl := receiver.service.FormatShortUrl(shortKey)
 
-	url, err := receiver.service.GetOriginalUrlBy(shortUrl)
+	url, err := receiver.service.GetOriginalUrlBy(shortKey)
 	if err != nil {
 		log.Println(err.Error())
 		ctx.JSON(http.StatusNotFound, contracts.ShortenUrlResponse{
