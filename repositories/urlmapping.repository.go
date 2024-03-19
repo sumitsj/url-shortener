@@ -12,9 +12,24 @@ type UrlMappingRepository interface {
 	Create(urlMapping *models.URLMapping) error
 	GetByShortKey(shortUrl string) (*models.URLMapping, error)
 	GetByOriginalUrl(originalUrl string) (*models.URLMapping, error)
+	GetTopNDomains(top int) []string
+	GetAll() ([]models.URLMapping, error)
 }
 
 type urlMappingRepository struct{}
+
+func (r *urlMappingRepository) GetAll() (list []models.URLMapping, err error) {
+	err = mgm.Coll(&models.URLMapping{}).SimpleFind(
+		&list,
+		bson.M{},
+		nil,
+	)
+	return
+}
+
+func (r *urlMappingRepository) GetTopNDomains(top int) []string {
+	panic("not implemented")
+}
 
 func (r *urlMappingRepository) Create(urlMapping *models.URLMapping) error {
 	err := mgm.Coll(urlMapping).Create(urlMapping)
