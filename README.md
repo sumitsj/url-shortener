@@ -1,9 +1,7 @@
 # url-shortener
 
-> Product Engineer Assignment || InfraCloud Technologies
-
 > This is URL shortener service that accepts a URL as an argument over a REST API and
-return a shortened URL as a result.
+return a shortened URL as a result. Then you can use the shortened url instead of original url anywhere.
 
 Prerequisites
 -------------
